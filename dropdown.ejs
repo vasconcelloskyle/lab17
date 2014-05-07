@@ -1,0 +1,56 @@
+
+<html>
+    <head>
+      <%include header %>
+        <link href="/style.css" rel="stylesheet">
+        <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
+        <script type="text/javascript">
+        
+            // Once the HTML has loaded, link javascript functions to HTML elements
+            $(document).ready(function () {
+            
+                // Populate Drop Down Menu with users from MySQL
+                $.ajax({
+                    url: "/viewArtists",
+                    type: "POST",
+                    contentType: "application/json",
+                    processData: false,
+                    complete: function (data) {
+                        $('div#viewArtists').html(data.responseText);
+                    }
+                });
+            
+                // Retrieve data from MySQL for a specific user
+                $('#user-submit').click(function () {
+                    var payload = {
+                        ID: $('#list').val(),
+	                ArtistName: $('#artist-name').val(),
+	                Genre: $('#genre').val(),
+	                FormedIn: $('#formed-in').val(),
+	                NumMembers: $('#num-members').val()
+                    };
+                    
+                    $.ajax({
+                        url: "/view",
+                        type: "POST",
+                        contentType: "application/json",
+                        processData: false,
+                        data: JSON.stringify(payload),
+                        complete: function (data) {
+                            $('#output').html(data.responseText);
+                        }
+                    });
+                });
+            });
+        </script>
+    </head>
+    <body>
+        <h2>Select an Artist to view information about them.</h2>
+	<p id="text">After submitting an Artist, their name in the table will link to a Google search for the Artist.</p>
+        <div id="viewArtists"></div>	
+        <input id="user-submit" type="submit" />
+        <p id="output"></p>
+
+    </body>
+<%include footer %>
+</html>
